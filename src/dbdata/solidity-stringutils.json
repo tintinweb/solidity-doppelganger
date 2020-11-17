@@ -1,0 +1,4 @@
+{"name":"strings","hash":"6decc6b068d34f5c8a7ff087e7c59bb5c79e0006","options":{"algorithm":"sha1","mode":"AST_EXACT"},"path":"https://github.com/Arachnid/solidity-stringutils/blob/01e955c1d60fe8ac6c7a40f208d3b64758fae40c/strings.sol"}
+{"name":"strings","hash":"2e9b03dbed7ea78c786af7a0854014ace1320653","options":{"algorithm":"sha1","mode":"AST_STRUCTURE"},"path":"https://github.com/Arachnid/solidity-stringutils/blob/01e955c1d60fe8ac6c7a40f208d3b64758fae40c/strings.sol"}
+{"name":"strings","hash":"6decc6b068d34f5c8a7ff087e7c59bb5c79e0006","options":{"algorithm":"sha1","mode":"AST_EXACT"},"path":"https://github.com/Arachnid/solidity-stringutils/blob/01e955c1d60fe8ac6c7a40f208d3b64758fae40c/src/strings.sol"}
+{"name":"strings","hash":"2e9b03dbed7ea78c786af7a0854014ace1320653","options":{"algorithm":"sha1","mode":"AST_STRUCTURE"},"path":"https://github.com/Arachnid/solidity-stringutils/blob/01e955c1d60fe8ac6c7a40f208d3b64758fae40c/src/strings.sol"}
