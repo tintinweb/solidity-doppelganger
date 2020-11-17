@@ -10,7 +10,7 @@ const fs = require("fs");
 const yargs = require("yargs");
 const { SolidityDoppelganger, HASH_MODES } = require('./SolidityDoppelganger');
 const path = require('path');
-var glob = require("glob")
+var glob = require("glob");
 
 
 const options = yargs

@@ -75,43 +75,36 @@ fs.readFile(fpath, (err, data) => {
 ### Input is Contract AST
 
 ```javascript
-/* 
-    Print contract hashes only
-*/ 
+/*
+    print codehashes
+*/
 if (options.print) {
-    let sourceUnit = dupeFinder._parse(data.toString('utf-8'));
-    dupeFinder.hashSourceUnit(sourceUnit)
-        .then(results =>
-            results.forEach(r =>
-                r.then(x => {
-                    let result = {
-                        name: x.name,
-                        hash: x.hash,
-                        options: x.options,
-                        path: `${options.basePath}${fpath}`
-                    };
-                    console.log(JSON.stringify(result));
-                })
-            )
-        );
+    dupeFinder.hashSourceCode(data.toString('utf-8'))
+        .then(results => {
+            results.forEach(x => {
+                let result = {
+                    name: x.name,
+                    hash: x.hash,
+                    options: x.options,
+                    path: `${options.basePath}${fpath}`
+                };
+                console.log(JSON.stringify(result));
+            });
+        });
 }
 /*
     find similar contracts
 */
 if (options.compare) {
-    let sourceUnit = dupeFinder._parse(data.toString('utf-8'));
-    dupeFinder.getContractDefinitions(sourceUnit).forEach(contractAst => {
-        dupeFinder.compareContractAst(contractAst, fpath)
-            .then(results => {
-                Object.keys(results.results).forEach(contractName => {
-                    let resultobj = results.results[contractName];
-                    console.log(`**** MATCH ****: ${resultobj.target.path} :: ${resultobj.target.name}`);
-                    for (let m of resultobj.matches) {
-                        console.log(`    :: ${m.name} :: ${m.path}  (mode=${m.options.mode})`);
-                    }
-                });
-            }
-            );
-    });
-                    }
+    dupeFinder.compareSourceCode(data.toString('utf-8'), fpath)
+        .then(results => {
+            Object.keys(results.results).forEach(contractName => {
+                let resultobj = results.results[contractName];
+                console.log(`**** MATCH ****: ${resultobj.target.path} :: ${resultobj.target.name}`);
+                for (let m of resultobj.matches) {
+                    console.log(`    :: ${m.name} :: ${m.path}  (mode=${m.options.mode})`);
+                }
+            });
+        });
+}
 ```

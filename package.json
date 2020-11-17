@@ -1,6 +1,6 @@
 {
   "name": "solidity-doppelganger-demo",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A tool to check if a contract is similar (exact/fuzzy AST based comparison) to a set of known/common contracts stored in a DB",
   "main": "src/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ConsenSys/solidity-doppelganger.git"
+    "url": "git+https://github.com/tintinweb/solidity-doppelganger.git"
   },
   "keywords": [
     "solidity",
@@ -18,9 +18,9 @@
   "author": "tintinweb",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ConsenSys/solidity-doppelganger/issues"
+    "url": "https://github.com/tintinweb/solidity-doppelganger/issues"
   },
-  "homepage": "https://github.com/ConsenSys/solidity-doppelganger#readme",
+  "homepage": "https://github.com/tintinweb/solidity-doppelganger#readme",
   "dependencies": {
     "@solidity-parser/parser": "^0.8.2",
     "glob": "^7.1.6",

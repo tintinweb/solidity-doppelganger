@@ -56,19 +56,17 @@ function main() {
                     */
                     if (options.print) {
                         dupeFinder.hashSourceCode(data.toString('utf-8'))
-                            .then(results =>
-                                results.forEach(r =>
-                                    r.then(x => {
-                                        let result = {
-                                            name: x.name,
-                                            hash: x.hash,
-                                            options: x.options,
-                                            path: `${options.basePath}${fpath}`
-                                        };
-                                        console.log(JSON.stringify(result));
-                                    })
-                                )
-                            );
+                            .then(results => {
+                                results.forEach(x => {
+                                    let result = {
+                                        name: x.name,
+                                        hash: x.hash,
+                                        options: x.options,
+                                        path: `${options.basePath}${fpath}`
+                                    };
+                                    console.log(JSON.stringify(result));
+                                });
+                            });
                     }
                     /*
                         find similar contracts
