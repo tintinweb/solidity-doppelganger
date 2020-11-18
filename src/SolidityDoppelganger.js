@@ -185,7 +185,6 @@ class AstHashedContract {
     }
 
     async _hashJsonFuzzy(node) {
-
         parser.visit(node, {
             ContractDefinition: (node) => {
                 node.name = "";
@@ -233,6 +232,9 @@ class AstHashedContract {
                 }
             }
         });
+
+        //
+
         // 2) sort by type
         let beforeChildren = node.subNodes.length;
         let nodeTypeMapping = {};
@@ -246,20 +248,30 @@ class AstHashedContract {
         }
         //clear the statespace
         node.subNodes = [];
-        //readd
+        
+        //readd - hashes only?
         for (let ntype of Object.keys(nodeTypeMapping).sort()) {
-            node.subNodes = node.subNodes.concat(nodeTypeMapping[ntype].sort());
-        }
-        assert(node.subNodes.length == beforeChildren);
-
-        //sort struct variables
-        parser.visit(node, {
-            StructDefinition: (node) => {
-                let members = node.members;
-                node.members = members.sort();
+            let elems = nodeTypeMapping[ntype];
+            //sorted by type
+            let that = this;
+            if(ntype === "StructDefinition"){
+                //make sure struct elements position independent
+                for(let struct of elems){
+                    if(!struct.members) continue;
+                    let hashedStructMembers = [];
+                    for(let sm of struct.members){
+                        hashedStructMembers.push(await that._hashJsonExact(sm));
+                    }
+                    struct.members = hashedStructMembers.sort();
+                }
             }
-        });
-
+            //add sub-hashes 
+            for (let sn of elems){
+                node.subNodes.push(await this._hashJsonExact(sn));
+            }
+        }
+        node.subNodes.sort();
+        assert(node.subNodes.length == beforeChildren);
         return this._hashJsonExact(node);
     }
 
