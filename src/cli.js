@@ -39,8 +39,7 @@ function main() {
                 return;
             }
             paths.map(fpath => {
-
-                if (path.parse(fpath).base.toLowerCase().includes("mock") || path.parse(fpath).base.toLowerCase().includes(".t.")) {
+                if (path.parse(fpath).base.toLowerCase().includes("mock") || path.parse(fpath).base.toLowerCase().includes(".t.") || path.parse(fpath).base.toLowerCase().includes("test")|| path.parse(fpath).base.toLowerCase().includes("migrations")) {
                     return;
                 }
                 fs.readFile(fpath, (err, data) => {
