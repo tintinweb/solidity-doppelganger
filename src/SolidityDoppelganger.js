@@ -6,7 +6,6 @@
  * 
  * */
 const parser = require('@solidity-parser/parser');
-const { assert } = require('console');
 const crypto = require('crypto');
 const fs = require("fs");
 
@@ -271,7 +270,9 @@ class AstHashedContract {
             }
         }
         node.subNodes.sort();
-        assert(node.subNodes.length == beforeChildren);
+        if (node.subNodes.length !== beforeChildren){
+            throw new Error("Assertion Failed: node.subNodes.length !== beforeChildren");
+        }
         return this._hashJsonExact(node);
     }
 
