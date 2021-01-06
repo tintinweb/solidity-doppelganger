@@ -2,6 +2,7 @@
 import subprocess
 import os
 import glob
+import sys
 
 
 def shell(cmd, cwd):
@@ -26,10 +27,16 @@ def runForDir(cwd, modes):
             f.write(ret + "\n")
             shell("git reset --hard", cwd)
 
-def runAllDirs():
-    d = "."
+def runAllDirs(d="."):
     for dir in [os.path.join(d, o) for o in os.listdir(d) if os.path.isdir(os.path.join(d,o))]:
         runForDir(dir, ["AST_EXACT", "AST_STRUCTURE"])
 
 if __name__=="__main__":
-    runAllDirs()
+    if len(sys.argv) == 1:
+        runAllDirs()
+    else:
+        sys.argv.pop(0)
+        for d in sys.argv:
+            
+            print(d)
+            runForDir(os.path.abspath(os.path.join(".",d)), ["AST_EXACT", "AST_STRUCTURE"])
