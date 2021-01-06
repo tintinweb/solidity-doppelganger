@@ -1,6 +1,6 @@
 {
   "name": "solidity-doppelganger",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A tool to check if a contract is similar (exact/fuzzy AST based comparison) to a set of known/common contracts like openzeppelin's",
   "main": "src/index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/tintinweb/solidity-doppelganger#readme",
   "dependencies": {
-    "@solidity-parser/parser": "^0.8.2",
+    "@solidity-parser/parser": "^0.11.0",
     "glob": "^7.1.6",
     "yargs": "^16.1.1"
   }
