@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to the "solidity-doppelganger" will be documented in this file.
 
-## v0.0.8
+## v0.0.9
 - update: allow access to internal asthash classes. provide sync version.
 
 ## v0.0.7
