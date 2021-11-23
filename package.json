@@ -1,6 +1,6 @@
 {
   "name": "solidity-doppelganger",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A tool to check if a contract is similar (exact/fuzzy AST based comparison) to a set of known/common contracts like openzeppelin's",
   "main": "src/index.js",
   "scripts": {

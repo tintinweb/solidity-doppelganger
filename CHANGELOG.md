@@ -1,5 +1,5 @@
 # Change Log
-All notable changes to the "solidity-visual-auditor" extension will be documented in this file.
+All notable changes to the "solidity-doppelganger" will be documented in this file.
 
 ## v0.0.7
 - update: regenerate patterns

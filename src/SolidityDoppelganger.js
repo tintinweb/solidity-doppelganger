@@ -345,6 +345,8 @@ class AstHashCompareResults {
 module.exports = {
     SolidityDoppelganger: SolidityDoppelganger,
     JsonDb: JsonDb,
-    HASH_MODES: HASH_MODES
+    HASH_MODES: HASH_MODES,
+    AstHashedContract,
+    AstHashCompareResults
 };
 

@@ -15,8 +15,9 @@ const { SolidityDoppelganger, HASH_MODES } = require('./SolidityDoppelganger');
 
 const options = yargs
     .usage("Usage: -n <name>")
-    .option("c", { alias: "compare", describe: "compare files with database", type: "boolean", demandOption: false })
-    .option("p", { alias: "print", describe: "compare files with database", type: "boolean", demandOption: false })
+    .option("c", { alias: "compareDb", describe: "compare files with database", type: "boolean", demandOption: false })
+    .option("f", { alias: "findDupes", describe: "compare files with each other", type: "boolean", demandOption: false })
+    .option("p", { alias: "print", describe: "print processed files to stdout", type: "boolean", demandOption: false })
     .option("d", { alias: "db", describe: "Only print hashes", type: "string", demandOption: false, default: "" })
     .option("b", { alias: "basePath", describe: "Only print hashes", type: "string", demandOption: false, default: "" })
     .option("i", { alias: "ignoreContractName", describe: "Only print hashes", type: "string", demandOption: false })
@@ -30,6 +31,9 @@ function main() {
         options.basePath += "/";
     }
 
+
+    let selectedModes = Array(...new Set(options.modes.split(',').filter(m => HASH_MODES.includes(m))));
+    let dupeFinder = new SolidityDoppelganger({ modes: selectedModes });
 
     options._.forEach(pat => {
 
@@ -48,8 +52,7 @@ function main() {
                         return;
                     }
 
-                    let selectedModes = Array(...new Set(options.modes.split(',').filter(m => HASH_MODES.includes(m))));
-                    let dupeFinder = new SolidityDoppelganger({ modes: selectedModes });
+                    
                     /*
                         print codehashes
                     */
@@ -70,7 +73,7 @@ function main() {
                     /*
                         find similar contracts
                     */
-                    if (options.compare) {
+                    if (options.compareDb) {
                         dupeFinder.compareSourceCode(data.toString('utf-8'), fpath)
                             .then(results => {
                                 Object.keys(results.results).forEach(contractName => {

@@ -15,10 +15,12 @@ let dupeFinder = new SolidityDoppelganger({database:"./mydatabase"});
 dupeFinder.check(text);
  */
 
-const { SolidityDoppelganger, JsonDb, HASH_MODES } = require('./SolidityDoppelganger');
+const { SolidityDoppelganger, JsonDb, HASH_MODES, AstHashedContract, AstHashCompareResults } = require('./SolidityDoppelganger');
 
 module.exports = {
-    SolidityDoppelganger: SolidityDoppelganger,
-    JsonDb: JsonDb,
-    HASH_MODES: HASH_MODES
+    SolidityDoppelganger,
+    JsonDb,
+    HASH_MODES,
+    AstHashCompareResults,
+    AstHashedContract
 };
