@@ -324,6 +324,179 @@ class AstHashedContract {
     }
 }
 
+class AstHashedContractSync {
+
+    constructor(options, fpath) {
+        this.options = {
+            algorithm: "sha1",
+            mode: undefined,
+            ...options
+        };
+        this.name = undefined;
+        this.contract = {
+            kind: undefined,
+            baseContracts: []
+        };
+        this.typeDeclarations = []; // Events, Structs, usingFors
+        this.stateVars = [];
+        this.functions = [];
+        this.hash = undefined;
+        this.path = fpath;
+
+    }
+
+    hashAst(node) {
+        switch (this.options.mode) {
+            case 'AST_STRUCTURE':
+                return this._hashJsonFuzzy(node);
+            case 'AST_EXACT':
+                //default:
+                return this._hashJsonExact(node);
+        }
+        throw new Error("Invalid HashMode");
+    }
+
+    _hashJsonFuzzy(node) {
+        parser.visit(node, {
+            ContractDefinition: (node) => {
+                node.name = "";
+            },
+            FunctionDefinition: (node) => {
+                node.name = "";
+            },
+            ModifierDefinition: (node) => {
+                node.name = "";
+            },
+            EventDefinition: (node) => {
+                node.name = "";
+                node.isAnonymous = null;
+            },
+            StructDefinition: (node) => {
+                node.name = "";
+            },
+            UsingForDeclaration: (node) => {
+                node.libraryName = "";
+            },
+            VariableDeclaration: (node) => {
+                node.name = "";
+                node.isIndexed = false;
+            },
+            UserDefinedTypeName: (node) => {
+                node.name = "";
+                if (typeof (node.namePath) === "string") {
+                    node.namePath = "";
+                }
+            },
+            ElementaryTypeName: (node) => {
+                node.name = "";
+            },
+            Identifier: (node) => {
+                node.name = "";
+            },
+            MemberAccess: (node) => {
+                node.name = "";
+                node.memberName = "";
+            },
+            FunctionCall: (node) => {
+                if (node.expression && node.expression.type === "Identifier" && ["require", "assert"].includes(node.expression.name)) {
+                    //remove assertion texts
+                    node.arguments.filter(n => n.type == "StringLiteral").forEach(n => n.value = "");
+                }
+            }
+        });
+
+        //
+
+        // 2) sort by type
+        let beforeChildren = node.subNodes.length;
+        let nodeTypeMapping = {};
+
+        for (let n of node.subNodes) {
+            let type = n.type;
+            if (nodeTypeMapping[type] === undefined) {
+                nodeTypeMapping[type] = [];
+            }
+            nodeTypeMapping[type].push(n);
+        }
+        //clear the statespace
+        node.subNodes = [];
+        
+        //readd - hashes only?
+        for (let ntype of Object.keys(nodeTypeMapping).sort()) {
+            let elems = nodeTypeMapping[ntype];
+            //sorted by type
+            let that = this;
+            if(ntype === "StructDefinition"){
+                //make sure struct elements position independent
+                for(let struct of elems){
+                    if(!struct.members) continue;
+                    let hashedStructMembers = [];
+                    for(let sm of struct.members){
+                        hashedStructMembers.push(that._hashJsonExact(sm));
+                    }
+                    struct.members = hashedStructMembers.sort();
+                }
+            }
+            //add sub-hashes 
+            for (let sn of elems){
+                node.subNodes.push(this._hashJsonExact(sn));
+            }
+        }
+        node.subNodes.sort();
+        if (node.subNodes.length !== beforeChildren){
+            throw new Error("Assertion Failed: node.subNodes.length !== beforeChildren");
+        }
+        return this._hashJsonExact(node);
+    }
+
+    _hashJsonExact(node) {
+        return hash(JSON.stringify(node), this.options.algorithm);
+    }
+
+    fromAst(node) {
+        if (node.type !== "ContractDefinition") {
+            throw new Error("Not a valid ContractDefinition");
+        }
+        /**
+         * process contract information
+         */
+        this.name = node.name;
+        this.contract.kind = node.kind;
+        this.contract.baseContracts = node.baseContracts
+            .filter(b => b.type === 'InheritanceSpecifier')
+            .map(b => {
+                /*
+                baseName: { type: 'UserDefinedTypeName', namePath: 'Ownable' },
+                arguments: [
+                    { type: 'NumberLiteral', number: '1', subdenomination: null },
+                    { type: 'NumberLiteral', number: '2', subdenomination: null }
+                ]
+                */
+                return { name: b.baseName, arguments: b.arguments };
+            });
+        /**
+         * process contract.typeDeclarations
+         */
+        for (let sn of node.subNodes) {
+            switch (sn.type) {
+                case 'FunctionDefinition':
+                case 'ModifierDefinition':
+                    this.functions.push(sn);
+                    break;
+                case 'StateVariableDeclaration':
+                    this.stateVars.push(sn);
+                    break;
+                default:
+                    //type declarations (struct, event, ...)
+                    this.typeDeclarations.push(sn);
+                    break;
+            }
+        }
+        this.hash = this.hashAst(node);
+        return this;
+    }
+}
+
 
 const HASH_MODES = ["AST_EXACT", "AST_STRUCTURE"];
 
@@ -347,6 +520,7 @@ module.exports = {
     JsonDb: JsonDb,
     HASH_MODES: HASH_MODES,
     AstHashedContract,
-    AstHashCompareResults
+    AstHashCompareResults,
+    AstHashedContractSync
 };
 
