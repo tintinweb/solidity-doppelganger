@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to the "solidity-doppelganger" will be documented in this file.
 
+## v0.0.11
+- update: dependencies
+
 ## v0.0.10
 - update: dependencies
 
